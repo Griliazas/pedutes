@@ -17,10 +17,24 @@ async fn main() {
         Html(html_content)
     }
 
+    async fn login_page() -> Html<String> {
+        let html_content = fs::read_to_string("static/login.html")
+            .unwrap_or_else(|_| "<h1>bleh</h1>".to_string());
+        Html(html_content)
+    }
+
+    async fn register_page() -> Html<String> {
+        let html_content = fs::read_to_string("static/register.html")
+            .unwrap_or_else(|_| "<h1>bleh</h1>".to_string());
+        Html(html_content)
+    }
+
     // nenukopijavau sito is google trust
     let app = Router::new()
 
         .route("/", get(index_handler))
+        .route("/login",get(login_page))
+        .route("/register",get(register_page))
         .nest_service("/static", ServeDir::new("static"))
         .nest_service("/res", ServeDir::new("res")); //jei nori pridet nauja folder turi linkint sitame
 
