@@ -6,6 +6,7 @@ use axum::{
 
 use std::fs;
 use tower_http::services::ServeDir;
+use sqlx::{sqlite::SqliteConnectOptions, SqlitePool};
 
 #[tokio::main]
 async fn main() {
@@ -28,6 +29,28 @@ async fn main() {
             .unwrap_or_else(|_| "<h1>bleh</h1>".to_string());
         Html(html_content)
     }
+
+    let options = SqliteConnectOptions::new()
+        .filename("forum.db")
+        .create_if_missing(true);
+
+    let pool = SqlitePool::connect_with(options)
+        .await
+        .expect("Failed to connect to database :3");
+
+    sqlx::query(
+        "CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL
+        )"
+    )
+
+    .execute(&pool)
+    .await
+    .expect("Failed to create table :3");
+
+    println!("Database connected :3");
 
     // nenukopijavau sito is google trust
     let app = Router::new()
