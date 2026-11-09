@@ -1,9 +1,127 @@
+* {
+    box-sizing: border-box;
+    font-family: math;
+    background-color: gray;
+}
+
+main{
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+header {
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
 body {
-    background-color: #ff79d7;
-    color: #f8fafc;
+    background-color: #f800;
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+}
+/* top nav */
+
+.top-nav {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 50px;
+}
+
+.top-nav a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: transparent;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+
+}
+
+.top-nav a:hover {
+    background-color: white;
+    color: #1a2036;
+}
+
+/* side nav */
+
+.side-nav {
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 180px;
+    height: 100vh;
+    background-color: black;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.side-nav h3 {
+    color: white;
+    margin-top: 0;
+}
+
+.side-nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.side-nav li {
+    margin-bottom: 8px;
+}
+
+.side-nav a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.side-nav a:hover {
+    background-color: white;
+    color: #151b2e;
+}
+
+
+nav {
+    background-color: #1a2036;
+}
+
+/* foot */
+footer {
+    background-color: #1a2036;
+    display:flex;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    justify-content:space-evenly;
+}
+
+.page-layout {
+    display: grid;
+    gap: 13px;
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    padding: 13px;
+    height: calc(100vh - 160px); /* Ekrano aukštis minus viršaus ir apačios plotai */
+    box-sizing: border-box;
 }
