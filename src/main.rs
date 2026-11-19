@@ -1,7 +1,7 @@
 use axum::{
     extract::{Form,State},
     http::StatusCode,
-    response::Html,
+    response::{Html, Redirect, IntoResponse},
     routing::get,
     Router,
 };
@@ -52,7 +52,7 @@ struct UserForm {
 async fn register_user(
     State(pool): State<SqlitePool>,
     Form(form): Form<UserForm>,
-) -> (StatusCode, &'static str) {
+) -> axum::response::Response {
 
     //tikrinam data kuria submittina
 
@@ -64,7 +64,7 @@ async fn register_user(
         return (
             StatusCode::BAD_REQUEST,
             "Invalid username or password :3",
-        );
+        ).into_response();
     }
 
     //kaip pas pona pascali ir ai destytoja, sugeneruojam salt ir td hashinam slaptikus
@@ -77,8 +77,8 @@ async fn register_user(
         Err(_) => {
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "Coul not process registration :("
-            );
+                "Could not process registration :("
+            ).into_response();
         }
     };
     
@@ -93,24 +93,23 @@ async fn register_user(
     .execute(&pool)
     .await;
 
-    match result{
-        Ok(_) => (
-            StatusCode::CREATED,
-            "Account created successfully :3",
-        ),
-        Err(sqlx::Error::Database(err))
-            if err.is_unique_violation() =>
-        {
-            (
-                StatusCode::CONFLICT,
-                "Username already exists :(",
-            )
-        }
-        Err(_) => (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            "Database error :(",
-        ),
+    match result {
+    Ok(_) => Redirect::to("/").into_response(),
+
+    Err(sqlx::Error::Database(err))
+        if err.is_unique_violation() =>
+    {
+        (
+            StatusCode::CONFLICT,
+            "Username already exists :(",
+        ).into_response()
     }
+
+    Err(_) => (
+        StatusCode::INTERNAL_SERVER_ERROR,
+        "Database error :(",
+    ).into_response(),
+}
 }
 
 //cia ipisau logina ahujena
@@ -118,7 +117,7 @@ async fn register_user(
 async fn login_user(
     State(pool):State<SqlitePool>,
     Form(form): Form<UserForm>,
-) -> (StatusCode, &'static str) {
+) -> axum::response::Response {
     
     //pagal slapyvardi rasim vierchus
 
@@ -140,28 +139,29 @@ async fn login_user(
             return (
                 StatusCode::UNAUTHORIZED,
                 "Invalid username or password :(",
-            );
+            ).into_response();
         }
 
         Err(_) => {
             return (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "Database erorr :(",
-            );
-        }
-    };
+                "Database error :(",
+        ).into_response();
+    }
+};
 
     //pakeiciam hasha i argon2
 
     let parsed_hash = match PasswordHash::new(&stored_hash) {
-        Ok(hash) => hash,
-        Err(_) => {
-            return (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Password verification error :(",
-            );
-        }
-    };
+    Ok(hash) => hash,
+
+    Err(_) => {
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Password verification error :(",
+        ).into_response();
+    }
+};
     
     //tikrinam ar slaptiks teisings
 
@@ -173,16 +173,13 @@ async fn login_user(
         .is_ok();
 
     if password_correct {
-        (
-            StatusCode::OK,
-            "Login successful! :3",
-        )
+        Redirect::to("/").into_response()
     } else {
         (
             StatusCode::UNAUTHORIZED,
             "Invalid username or password >:(",
-        )
-    }
+        ).into_response()
+}
 }
 
 #[tokio::main]
