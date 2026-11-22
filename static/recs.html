@@ -60,7 +60,15 @@
 
     <main class="card">
         <h1>helo</h1>
-        <img src="../res/meimei.jpg">
+        <form action="/post" method="POST" class="post-form">
+		<textarea name="content" rows="4" placeholder="Write something..." required></textarea>
+		<button type="submit">Post</button>
+	</form>
+
+	<div class="posts-feed">
+		{{POSTS_SECTION}}
+	</div>
+	<!--atleisk uz div, diva :p-->
     </main>
 
     <aside class="right-sidebar">

@@ -4,10 +4,13 @@ mod user;
 #[path = "../server/pages.rs"]
 mod pages;
 
+#[path = "../server/posts.rs"]
+mod posts;
+
 //rs failu locations ^^^ ir deklaravimas
 
 use axum::{
-    routing::get,
+    routing::{get, post},
     Router,
 };
 
@@ -36,10 +39,20 @@ async fn main() {
             password_hash TEXT NOT NULL
         )"
     )
-
     .execute(&pool)
     .await
     .expect("Failed to create table :3");
+
+    sqlx::query(
+        "CREATE TABLE IF NOT EXISTS posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            content TEXT NOT NULL
+        )"
+    )
+    .execute(&pool)
+    .await
+    .expect("Failed to create posts table :3");
 
     println!("Database connected :3");
 
@@ -47,6 +60,7 @@ async fn main() {
     //sitame gali paziet kaip callinamos funkcijos is kitu failu :p
 let app = Router::new()
     .route("/", get(pages::index_handler))
+    .route("/post", post(posts::create_post))
     .route("/about", get(pages::about_page))
     .route("/changelog", get(pages::changelog_page))
     .route("/recs", get(pages::recs_page))

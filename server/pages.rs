@@ -1,6 +1,7 @@
 //visa page loadinimo logika
-use axum::response::Html;
+use axum::{extract::State, response::Html};
 use axum_extra::extract::cookie::CookieJar;
+use sqlx::SqlitePool;
 use std::fs;
 
 //cookieszz.. mnjhjhgggggggguhhh
@@ -38,8 +39,14 @@ pub async fn changelog_page(jar: CookieJar) -> Html<String> {
     render_page("static/changelog.html", &jar)
 }
 
-pub async fn recs_page(jar: CookieJar) -> Html<String> {
-    render_page("static/recs.html", &jar)
+pub async fn recs_page(
+    jar: CookieJar,
+    State(pool): State<SqlitePool>,
+) -> Html<String> {
+    let posts_html = crate::posts::render_posts(&pool).await;
+    let mut page = render_page("static/recs.html", &jar).0;
+    page = page.replace("{{POSTS_SECTION}}", &posts_html);
+    Html(page)
 }
 
 pub async fn writeups_page(jar: CookieJar) -> Html<String> {
