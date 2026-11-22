@@ -6,10 +6,14 @@
 	<link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet">
 	<link rel="icon" type="image/x-icon" href="../res/icon.png">
     <link rel="stylesheet" href="../static/styles.css">
+	<link href="[https://fonts.googleapis.com/css2?family=VT323&display=swap](https://fonts.googleapis.com/css2?family=VT323&display=swap)" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h2>CTFai</h2>
+		<nav class="profile-nav">
+			{{USER_SECTION}}
+		</nav>
+        <h2><i class="bxf bx-dino"></i>CTFai</h2>
 		
 		<nav class="user-nav" aria-label="user nav">
 			<a href="">Profile</a>
@@ -19,14 +23,13 @@
 			<a href="../static/login.html">Log in</a>
 		</nav>
 		
-        <!-- nav header -->
         <nav class="top-nav" aria-label="page nav">
-            <a href="/">Home</a>
-            <a href="../static/about.html">About</a>
-            <a href="../static/changelog.html">Change log</a>
-            <a href="../static/recs.html">Recommendations </a>
-            <a href="../static/writeups.html"> Write-ups </a>
-        </nav>
+			<a href="/">Home</a>
+			<a href="/about">About</a>
+			<a href="/changelog">Change log</a>
+			<a href="/recs">Recommendations</a>
+			<a href="/writeups">Write-ups</a>
+		</nav>
     </header>
 
 	<aside class="right-sidebar">
@@ -64,7 +67,7 @@
 
 	<aside class="right-sidebar">
 		<section class="sidebar-box popular-posts">
-			<h3>Popular Posts</h3>
+			<h3></i>Popular Posts</h3>
 			<ul class="post-list">
 				<li><a href="../static/writeups.html">Pirmi writeupai :3</a></li>
 				<li><a href="../static/writeups.html">Pzda cia ANTRI writeupai seni</a></li>
@@ -73,7 +76,7 @@
 		</section
 		
 		<section class="sidebar-box leaderboard">
-			<h3>Leaderboard</h3>
+			<h3><i class="bxf bx-people-diversity"></i>Leaderboard</h3>
 			<ol class="leaderboard-list">
 				<li><span>1. Gerardas</span> <span> 999 aura points</span> </li>
 				<li><span>2. Ieva</span> <span> 998 aura points</span> </li>
