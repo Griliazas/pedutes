@@ -9,7 +9,7 @@
 </head>
 <body class="login-page">
     <div class="wrapper">
-        <form action="/register" method="POST">
+        <form id="register-form" action="/register" method="POST">
             <h1>Register</h1>
             
             <div class="input-box">
@@ -26,9 +26,12 @@
 
             <button type="submit" class="btn">Register</button>
 
-            <div class="register-link">
+            <div id="notification"></div>
+
+            <div class="register-link"> 
                 <p>Already have an account? <a href="../static/login.html">Login</a></p>
             </div>
     </div>
+<script src="../static/script.js"></script>
 </body>
 </html>

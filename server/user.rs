@@ -81,7 +81,10 @@ pub async fn register_user(
     .await;
 
     match result {
-    Ok(_) => Redirect::to("/").into_response(),
+    Ok(_) => (
+        StatusCode::CREATED,
+        "Registration successful!"
+    ).into_response(),
 
     Err(sqlx::Error::Database(err))
         if err.is_unique_violation() =>

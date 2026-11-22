@@ -58,17 +58,24 @@
 		</section>
 	</aside>
 
-    <main class="card">
-        <h1>helo</h1>
+    <main class="posts-card">
+        <h1>Write some bullshit here</h1>
         <form action="/post" method="POST" class="post-form">
-		<textarea name="content" rows="4" placeholder="Write something..." required></textarea>
-		<button type="submit">Post</button>
+		<textarea class="textbox" name="content" placeholder="Write something..." maxlength="1000" required></textarea>
+		<div class="post-bottom">
+			<div id="word-count">
+				<span id="current">0</span> /
+				<span id="maximum">1000</span>
+			</div>
+		<button type="submit" class="btn">Post</button>
+		</div>
 	</form>
 
 	<div class="posts-feed">
 		{{POSTS_SECTION}}
 	</div>
 	<!--atleisk uz div, diva :p-->
+	<!--go frick yourself kaminskilover05 :)-->
     </main>
 
     <aside class="right-sidebar">
@@ -91,6 +98,6 @@
 				<li><span>5. Adamas</span> <span> -300 aura points</span> </li>
 		</section>
 	</aside>
-
+<script src="../static/script.js"></script>
 </body>
 </html>

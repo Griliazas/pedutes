@@ -1,17 +1,21 @@
 :root {
-    --bg-main: #0d0e17;
-    --bg-surface: #17192b;
-    --bg-elevated: #22263b;
-    --bg-darkest: #080912;
+  --bg-main: #08090e;
+  --bg-surface: #0e101b;
+  --bg-elevated: #151825;
+  --bg-darkest: #05060b;
 
-    --border-primary: #3e435c;
-    --border-secondary: #464c6b;
+  --border-primary: #2b2f40;
+  --border-secondary: #31354b;
 
-    --text-primary: #a9d6eb;
-    --text-secondary: #8694bf;
-    --text-accent: #c9a7e6;
-    --text-muted: #5d6a91;
+  --text-primary: #a9d6eb;
+  --text-secondary: #8694bf;
+  --text-accent: #c9a7e6;
+  --text-muted: #5d6a91;
+
+  --notification-error: #e36f86;
+  --notification-success: #9cd476;
 }
+
 
 * {
     box-sizing: border-box;
@@ -55,7 +59,7 @@ main {
     width: 100%;
     background-color: var(--bg-darkest);
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 4px;
     border: 1px solid var(--text-primary);
 }
 
@@ -378,6 +382,7 @@ body.login-page {
 
 .remember-forgot a {
     color: var(--text-primary);
+    font-weight: 600;
     text-decoration: none;
 }
 
@@ -411,4 +416,81 @@ body.login-page {
 
 .register-link p a:hover {
     text-decoration: underline;
+}
+
+.posts-card .btn {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border: 1px solid var(--border-secondary);
+    background-color: var(--bg-elevated);
+    border-radius: 4px;
+}
+
+.posts-card .textbox {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    padding: 1em;
+    border-radius: 4px;
+    border: 2px solid var(--border-secondary);
+    outline: none;
+    font-size: 16px;
+    line-height: 1.4;
+    width: 400px;
+    height: 150px;
+    resize: none;
+}
+
+.post-form {
+    width: 400px;
+    max-width: 100%;
+}
+
+.post-form .textbox {
+    width: 100%;
+    display: block;
+}
+
+.post-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.textbox:hover {
+    cursor: text;
+    background-color: var(--bg-elevated);
+}
+
+.posts-feed {
+    margin-top: 20px;
+}
+
+#notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 4px;
+    color: var(--bg-darkest);
+    font-size: 16px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+#notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#notification.error {
+    background-color: var(--notification-error);
+}
+
+#notification.success {
+    background-color: var(--notification-success);
 }
