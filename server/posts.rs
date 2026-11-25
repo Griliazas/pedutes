@@ -66,20 +66,29 @@ pub async fn create_post(
 }
 
 pub async fn render_posts(pool: &SqlitePool) -> String {
-    let posts: Vec<(String, String)> = sqlx::query_as(
-        "SELECT username, content FROM posts ORDER BY id DESC"
+    let posts: Vec<(String, String, i64)> = sqlx::query_as(
+        "SELECT posts.username, posts.content, COALESCE(users.avatar, 1) 
+         FROM posts 
+         LEFT JOIN users ON posts.username = users.username 
+         ORDER BY posts.id DESC"
     )
     .fetch_all(pool)
     .await
     .unwrap_or_default();
 
     let mut posts_html = String::new();
-    for (author, content) in posts {
+    for (author, content, avatar) in posts {
+        let avatar_src = format!("../res/avatars/pic{}.png", avatar);
+
         posts_html.push_str(&format!(
-            r#"<div class="post-container">
-                <div class="post-author">@{}</div>
+            r#"<section class="post-box">
+                <div class="post-user">
+                    <img src="{}" alt="avatar" class="post-avatar">
+                    <span>@{}</span>
+                </div>
                 <p class="post-content">{}</p>
-            </div>"#,
+            </section>"#,
+            avatar_src,
             escape_html(&author),
             escape_html(&content)
         ));

@@ -9,7 +9,7 @@
 
   --text-primary: #a9d6eb;
   --text-secondary: #8694bf;
-  --text-accent: #c9a7e6;
+  --text-accent: #b8a7e6;
   --text-muted: #5d6a91;
 
   --notification-error: #e36f86;
@@ -466,6 +466,42 @@ body.login-page {
 
 .posts-feed {
     margin-top: 20px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+
+.post-box {
+    border: 1px solid var(--border-secondary);
+    border-radius: 6px;
+    padding: 15px;
+    background-color: var(--bg-elevated);
+}
+
+.post-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--text-accent);
+}
+
+.post-avatar {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border: 1px solid var(--border-secondary);
+    border-radius: 4px;
+}
+
+.post-content {
+    margin: 0;
 }
 
 .profile-container {
@@ -492,7 +528,7 @@ body.login-page {
 
 .profile-username {
     font-size: 1rem;
-    color: var(--text-primary);
+    color: var(--text-accent);
 }
 
 .avatar-dropdown {

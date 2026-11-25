@@ -197,10 +197,11 @@ pub async fn change_avatar(
         }
     };
 
-    if !(1..=3).contains(&form.avatar) {
+    let avatar_path = format!("res/avatars/pic{}.png", form.avatar);
+    if form.avatar < 1 || !std::path::Path::new(&avatar_path).is_file() {
         return (
             StatusCode::BAD_REQUEST,
-            "Invalid profile picture"
+            "Invalidas"
         ).into_response();
     }
 
