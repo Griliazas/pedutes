@@ -1,4 +1,3 @@
-
 const formReg = document.getElementById("register-form");
 const formLog = document.getElementById("login-form");
 //Cia registracijai
@@ -88,3 +87,43 @@ if (textarea && current) {
         current.textContent = characterCount;
     });
 }
+
+const avatarOptions = document.querySelectorAll(".avatar-option");
+const profileAvatar = document.getElementById("profile-avatar");
+const avatarDropdown = document.querySelector(".avatar-dropdown");
+const avatarStatus = document.getElementById("avatar-status");
+
+avatarOptions.forEach(option => {
+    option.addEventListener("click", async () => {
+        const avatar = option.dataset.avatar;
+
+        avatarOptions.forEach(btn => btn.disabled = true);
+        avatarStatus.textContent = "";
+
+        try {
+            const response = await fetch("/avatar", {
+                method:"POST",
+                headers: {
+                    "Content-Type":
+                    "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    avatar: avatar
+                })
+            });
+
+            if (!response.ok) {
+                avatarStatus.textContent = await response.text();
+                return;
+            }
+
+            profileAvatar.src = `/res/avatars/pic${avatar}.png`;
+            avatarDropdown.open = false;
+        } catch (error) {
+            avatarStatus.textContent = "Could not update avatar :(";
+            console.error(error);
+        } finally {
+            avatarOptions.forEach(btn => btn.disabled = false);
+        }
+    });
+});

@@ -6,7 +6,11 @@ use std::fs;
 
 //cookieszz.. mnjhjhgggggggguhhh
 
-fn render_page(file_path: &str, jar: &CookieJar) -> Html<String> {
+async fn render_page(
+    file_path: &str,
+    jar: &CookieJar,
+    pool: &SqlitePool,
+) -> Html<String> {
     let html_content = fs::read_to_string(file_path)
         .unwrap_or_else(|_| "<h1>bleh</h1>".to_string());
 
@@ -16,9 +20,27 @@ fn render_page(file_path: &str, jar: &CookieJar) -> Html<String> {
             .value()
             .replace('&', "&amp;")
             .replace('<', "&lt;")
-            .replace('>', "&gt;");
+            .replace('>', "&gt;")
+            .replace('"',"&quot;")
+            .replace('\'', "&#39;");
 
-        format!("<span>{}</span>", safe_name)
+        let avatar: Option<i64> = sqlx::query_scalar(
+            "SELECT avatar FROM users WHERE username =?"
+        )
+        .bind(cookie.value())
+        .fetch_one(pool)
+        .await
+        .unwrap_or(None);
+
+        if let Some(avatar) = avatar {
+            fs::read_to_string("static/profile.html")
+            .unwrap_or_default()
+            .replace("{{AVATAR}}", &avatar.to_string())
+            .replace("{{USERNAME}}", &safe_name)
+        } else {
+            String::new()
+        }
+
     } else {
         String::new() // guest :p
     };
@@ -27,16 +49,25 @@ fn render_page(file_path: &str, jar: &CookieJar) -> Html<String> {
     Html(rendered)
 }
 
-pub async fn index_handler(jar: CookieJar) -> Html<String> {
-    render_page("static/index.html", &jar)
+pub async fn index_handler(
+    jar: CookieJar,
+    State(pool): State<SqlitePool>,
+) -> Html<String> {
+    render_page("static/index.html", &jar, &pool).await
 }
 
-pub async fn about_page(jar: CookieJar) -> Html<String> {
-    render_page("static/about.html", &jar)
+pub async fn about_page(
+    jar: CookieJar,
+    State(pool): State<SqlitePool>,
+) -> Html<String> {
+    render_page("static/about.html", &jar, &pool).await
 }
 
-pub async fn changelog_page(jar: CookieJar) -> Html<String> {
-    render_page("static/changelog.html", &jar)
+pub async fn changelog_page(
+    jar: CookieJar,
+    State(pool): State<SqlitePool>,
+) -> Html<String> {
+    render_page("static/changelog.html", &jar, &pool).await
 }
 
 pub async fn recs_page(
@@ -44,13 +75,16 @@ pub async fn recs_page(
     State(pool): State<SqlitePool>,
 ) -> Html<String> {
     let posts_html = crate::posts::render_posts(&pool).await;
-    let mut page = render_page("static/recs.html", &jar).0;
+    let mut page = render_page("static/recs.html", &jar, &pool).await.0;
     page = page.replace("{{POSTS_SECTION}}", &posts_html);
     Html(page)
 }
 
-pub async fn writeups_page(jar: CookieJar) -> Html<String> {
-    render_page("static/writeups.html", &jar)
+pub async fn writeups_page(
+    jar: CookieJar,
+    State(pool): State<SqlitePool>,
+) -> Html<String> {
+    render_page("static/writeups.html", &jar, &pool).await
 }
 
 pub async fn login_page() -> Html<String>{

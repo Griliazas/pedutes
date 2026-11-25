@@ -176,3 +176,57 @@ pub async fn login_user(
         ).into_response()
 }
 }
+
+#[derive(Deserialize)]
+pub struct AvatarForm{
+    avatar: i64,
+}
+
+pub async fn change_avatar(
+    jar: CookieJar,
+    State(pool): State<SqlitePool>,
+    Form(form): Form<AvatarForm>,
+) -> axum::response::Response {
+    let username = match jar.get("username") {
+        Some(cookie) => cookie.value().to_string(),
+        None => {
+            return (
+                StatusCode::UNAUTHORIZED,
+                "You must be logged in GRR"
+            ).into_response();
+        }
+    };
+
+    if !(1..=3).contains(&form.avatar) {
+        return (
+            StatusCode::BAD_REQUEST,
+            "Invalid profile picture"
+        ).into_response();
+    }
+
+    let result = sqlx::query(
+        "UPDATE users SET avatar = ?
+        WHERE username =?"
+    )
+    .bind(form.avatar)
+    .bind(&username)
+    .execute(&pool)
+    .await;
+
+    match result {
+        Ok(result) if result.rows_affected() > 0 => (
+            StatusCode::OK,
+            "Profile picture updated :3"
+        ).into_response(),
+
+        Ok(_) => (
+            StatusCode::UNAUTHORIZED,
+            "User not found :("
+        ).into_response(),
+
+        Err(_) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Yayy database error"
+        ).into_response(),
+    }
+}

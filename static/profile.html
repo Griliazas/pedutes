@@ -1,0 +1,33 @@
+<div class="profile-container">
+
+    <img id="profile-avatar"
+        class="profile-avatar"
+        src="/res/avatars/pic{{AVATAR}}.png"
+        alt="profile picture">
+
+    <div class="profile-info">
+        <span class="profile-username">{{USERNAME}}</span>
+        <details class="avatar-dropdown">
+            
+            <summary class="avatar-toggle">
+                Change profile picture
+            </summary>
+
+            <div class="avatar-menu">
+                <button type="button" class="avatar-option" data-avatar="1">
+                    <img src="/res/avatars/pic1.png" alt="Avatar 1">
+                </button>
+
+                <button type="button" class="avatar-option" data-avatar="2">
+                    <img src="/res/avatars/pic2.png" alt="Avatar 2">
+                </button>
+
+                <button type="button" class="avatar-option" data-avatar="3">
+                    <img src="/res/avatars/pic3.png" alt="Avatar 3">
+                </button>
+
+                <span id="avatar-status" role="status"></span>
+            </div>
+        </details>
+    </div>
+</div>

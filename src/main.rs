@@ -31,7 +31,7 @@ async fn main() {
         .expect("Failed to connect to database :3");
 
     //cia musu sql table susikuria
-    
+
     sqlx::query(
         "CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +42,31 @@ async fn main() {
     .execute(&pool)
     .await
     .expect("Failed to create table :3");
+
+    //tikrinam ar avatar column egzistuoja
+
+    let avatar_column_exists: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM pragma_table_info('users')
+         WHERE name = 'avatar'"
+    )
+    .fetch_one(&pool)
+    .await
+    .expect("Failed to check avatar column");
+
+    //jeigu neegzistuoja, pridedam
+
+    if avatar_column_exists == 0 {
+        sqlx::query(
+            "ALTER TABLE users
+             ADD COLUMN avatar INTEGER NOT NULL DEFAULT 1
+             CHECK (avatar IN (1, 2, 3))"
+        )
+        .execute(&pool)
+        .await
+        .expect("Failed to add avatar column");
+    }
+
+    //posts table
 
     sqlx::query(
         "CREATE TABLE IF NOT EXISTS posts (
@@ -68,6 +93,7 @@ let app = Router::new()
     .route("/login", get(pages::login_page).post(user::login_user))
     .route("/register", get(pages::register_page).post(user::register_user))
     .route("/logout", get(user::logout_user))
+    .route("/avatar", post(user::change_avatar))
     .nest_service("/static", ServeDir::new("static"))
     .nest_service("/res", ServeDir::new("res"))
     .with_state(pool);
