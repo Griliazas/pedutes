@@ -59,7 +59,7 @@ async fn main() {
         sqlx::query(
             "ALTER TABLE users
              ADD COLUMN avatar INTEGER NOT NULL DEFAULT 1
-             CHECK (avatar IN (1, 2, 3))"
+             CHECK (avatar >= 1)"
         )
         .execute(&pool)
         .await
@@ -90,6 +90,7 @@ let app = Router::new()
     .route("/changelog", get(pages::changelog_page))
     .route("/recs", get(pages::recs_page))
     .route("/writeups", get(pages::writeups_page))
+    .route("/history",get(pages::history_page))
     .route("/login", get(pages::login_page).post(user::login_user))
     .route("/register", get(pages::register_page).post(user::register_user))
     .route("/logout", get(user::logout_user))

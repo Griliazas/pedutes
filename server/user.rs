@@ -207,7 +207,7 @@ pub async fn change_avatar(
 
     let result = sqlx::query(
         "UPDATE users SET avatar = ?
-        WHERE username =?"
+        WHERE username = ?"
     )
     .bind(form.avatar)
     .bind(&username)

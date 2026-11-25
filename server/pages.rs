@@ -87,6 +87,20 @@ pub async fn writeups_page(
     render_page("static/writeups.html", &jar, &pool).await
 }
 
+pub async fn history_page(
+    jar: CookieJar,
+    State(pool): State<SqlitePool>,
+) -> Html<String> {
+    let posts_html = if let Some(cookie) = jar.get("username") {
+        crate::posts::render_user_posts(&pool, cookie.value()).await
+    } else {
+        "<p>You must log in to view your history faggy ahh noob not even faggy honestly just weird tbh it's genuinely weird dude wtf dude ur so weird oh my genuine god ur so weird fricking foid</p>".to_string()
+    };
+    let mut page = render_page("static/history.html", &jar, &pool).await.0;
+    page = page.replace("{{POSTS_SECTION}}", &posts_html);
+    Html(page)
+}
+
 pub async fn login_page() -> Html<String>{
     let html_content = fs::read_to_string("static/login.html")
         .unwrap_or_else(|_| "<h1>bleh</h1>".to_string());

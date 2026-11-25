@@ -549,14 +549,14 @@ body.login-page {
 
 .avatar-menu {
     position: absolute;
-    top: -10%;
+    top: -25%;
     left: calc(100% + 12px);
     transform: translateY(-50%);
     display: flex;
     flex-wrap: wrap;
     gap: 2px;
     width: max-content;
-    max-width: 220px;
+    max-width: 244px;
     padding: 2px;
     border: 1px solid var(--border-secondary);
     border-radius: 4px;

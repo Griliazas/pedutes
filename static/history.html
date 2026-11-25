@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommendations</title>
+	<link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet">
+	<link rel="icon" type="image/x-icon" href="../res/icon.png">
+    <link rel="stylesheet" href="../static/styles.css">
+	<link href="[https://fonts.googleapis.com/css2?family=VT323&display=swap](https://fonts.googleapis.com/css2?family=VT323&display=swap)" rel="stylesheet">
+</head>
+<body>
+    <header>
+		<nav class="profile-nav">
+			{{USER_SECTION}}
+		</nav>
+        <h2>Recommendations :o</h2>
+
+        <nav class="user-nav" aria-label="user nav">
+			<a href="">Profile</a>
+			<a href="">History</a>
+			<a href="">Settings</a>
+			<a href="../static/register.html">Register</a>
+			<a href="../static/login.html">Log in</a>
+		</nav>
+
+        <!-- nav header -->
+        <nav class="top-nav" aria-label="page nav">
+			<a href="/">Home</a>
+			<a href="/about">About</a>
+			<a href="/changelog">Change log</a>
+			<a href="/recs">Recommendations</a>
+			<a href="/writeups">Write-ups</a>
+		</nav>
+    </header>
+
+	
+	<aside class="right-sidebar">
+		<section class="sidebar-box cat-corner">
+		<ul>
+		<h3>Cats of the week</h3>
+		<img src="../res/meimei.jpg" alt="meimei">
+		<li>Mei Mei</li>
+		<br>
+		<img src="../res/zuvyte.jpg" alt="zuvyte">
+		<li>Zuvyte</li>
+		</ul>
+		</section
+		
+		<section class="sidebar-box footer">
+			<footer>
+
+			<a><i class="bxf bx-user"></i> GJ IJ</a>
+			<a><i class="bxf bx-home-alt"></i> Taikos pr. 13</a>
+			<a><i class="bxf bx-discussion"></i> Susisiekite minde.lol</a>
+			<a><i class="bxf bx-dumbbell-alt"></i> Pramone UP</a>
+			<a><i class="bxf bx-skull"></i> Sestasis pojutis degs </a>
+			</footer>
+		</section>
+	</aside>
+
+    <main class="posts-card">
+        <h1>Your post history</h1>
+	    <div class="posts-feed">
+		    {{POSTS_SECTION}}
+	    </div>
+    </main>
+
+    <aside class="right-sidebar">
+		<section class="sidebar-box popular-posts">
+			<h3>Popular Posts</h3>
+			<ul class="post-list">
+				<li><a href="../static/writeups.html">Pzda cia writeupai seni</a></li>
+				<li><a href="../static/writeups.html">Pzda cia ANTRI writeupai seni</a></li>
+				<li><a href="../static/recs.html">Hot benedict smells penis cheese</a></li>
+				<li><a href="../static/changelog.html">Holy fucking shit they actually update?</a></li>
+		</section
+		
+		<section class="sidebar-box leaderboard">
+			<h3>Leaderboard</h3>
+			<ol class="leaderboard-list">
+				<li><span>1. Gerardas</span> <span> 999 aura points</span> </li>
+				<li><span>2. Ieva</span> <span> 998 aura points</span> </li>
+				<li><span>3. Augustas</span> <span> 950 aura points</span> </li>
+				<li><span>4. Benediktas</span> <span> 450 aura points</span> </li>
+				<li><span>5. Adamas</span> <span> -300 aura points</span> </li>
+		</section>
+	</aside>
+<script src="../static/script.js"></script>
+</body>
+</html>

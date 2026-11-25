@@ -96,3 +96,42 @@ pub async fn render_posts(pool: &SqlitePool) -> String {
 
     posts_html
 }
+
+pub async fn render_user_posts(pool: &SqlitePool,username: &str,) -> String {
+    let posts: Vec<(String, String, i64)> = sqlx::query_as(
+        "SELECT posts.username, posts.content, COALESCE(users.avatar, 1)
+         FROM posts
+         LEFT JOIN users ON posts.username = users.username
+         WHERE posts.username = ?
+         ORDER BY posts.id DESC"
+    )
+    .bind(username)
+    .fetch_all(pool)
+    .await
+    .unwrap_or_default();
+
+    let mut posts_html = String::new();
+    for (author, content, avatar) in posts {
+        let avatar_src = format!("../res/avatars/pic{}.png", avatar);
+
+        posts_html.push_str(&format!(
+            r#"<section class="post-box">
+                <div class="post-user">
+                    <img src="{}" alt="avatar" class="post-avatar">
+                    <span>@{}</span>
+                </div>
+                <p class="post-content">{}</p>
+            </section>"#,
+            avatar_src,
+            escape_html(&author),
+            escape_html(&content)
+        ));
+    }
+
+    if posts_html.is_empty() {
+        posts_html = "<p>You haven't posted anything yet RETARD IEVA YOU FOID FUCKING FISH :p</p>"
+            .to_string();
+    }
+    
+    posts_html
+}
