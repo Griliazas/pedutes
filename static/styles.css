@@ -12,10 +12,41 @@
   --text-accent: #b8a7e6;
   --text-muted: #5d6a91;
 
-  --notification-error: #e36f86;
-  --notification-success: #9cd476;
+  --red: #e36f86;
+  --green: #9cd476;
+  --yellow: #e3e994;
+  --blue: #94c3e9;
+  --pink: #e8b3f3;
+  --orange: #e9ac94;
 }
 
+.web {
+background-color: var(--blue);
+}
+
+.crypto {
+background-color: var(--green);
+}
+
+.foren {
+background-color: var(--blue);
+}
+
+.osint {
+background-color: var(--blue);
+}
+
+.rev {
+background-color: var(--red);
+}
+
+.misc {
+background-color: var(--blue);
+}
+
+.pwn {
+background-color: var(--yellow);
+}
 
 * {
     box-sizing: border-box;
@@ -500,6 +531,25 @@ body.login-page {
     border-radius: 4px;
 }
 
+.post-tag {
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background-color: var(--text-primary);
+    color: var(--border-primary);
+}
+
+.tag-select {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-secondary);
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+}
+
 .post-content {
     margin: 0;
 }
@@ -584,7 +634,7 @@ body.login-page {
 
 #avatar-status {
     flex-basis: 100%;
-    color: var(--notification-error);
+    color: var(--red);
 }
 
 #avatar-status:empty {
@@ -611,9 +661,9 @@ body.login-page {
 }
 
 #notification.error {
-    background-color: var(--notification-error);
+    background-color: var(--red);
 }
 
 #notification.success {
-    background-color: var(--notification-success);
+    background-color: var(--green);
 }

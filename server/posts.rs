@@ -10,6 +10,7 @@ use sqlx::SqlitePool;
 #[derive(Deserialize)]
 pub struct PostForm {
     pub content: String,
+    pub tag: String,
 }
 //as parasysiu komentartus kita komita
 fn escape_html(input: &str) -> String {
@@ -35,7 +36,6 @@ pub async fn create_post(
         }
     };
 
-    //kad nerasytu debilisku postu limita galesim pakeist
     let trimmed = form.content.trim();
     if trimmed.len() > 1000 {
         return (
@@ -50,9 +50,20 @@ pub async fn create_post(
         ).into_response();
     }
 
-    let result = sqlx::query("INSERT INTO posts (username, content) VALUES (?, ?)")
+    let tag = match form.tag.as_str() {
+        "Web" | "Crypto" | "Rev" | "Pwn" | "Forensics" | "OSINT" | "MISC" => form.tag.as_str(),
+        _ => {
+            return (
+                StatusCode::BAD_REQUEST,
+                "Neteisingas tagas debile lerva",
+            ).into_response();
+        }
+    };
+
+    let result = sqlx::query("INSERT INTO posts (username, content, tag) VALUES (?, ?, ?)")
         .bind(&username)
         .bind(trimmed)
+        .bind(tag)
         .execute(&pool)
         .await;
 
@@ -66,8 +77,8 @@ pub async fn create_post(
 }
 
 pub async fn render_posts(pool: &SqlitePool) -> String {
-    let posts: Vec<(String, String, i64)> = sqlx::query_as(
-        "SELECT posts.username, posts.content, COALESCE(users.avatar, 1) 
+    let posts: Vec<(String, String, String, i64)> = sqlx::query_as(
+        "SELECT posts.username, posts.content, COALESCE(posts.tag, 'Misc'), COALESCE(users.avatar, 1) 
          FROM posts 
          LEFT JOIN users ON posts.username = users.username 
          ORDER BY posts.id DESC"
@@ -77,7 +88,7 @@ pub async fn render_posts(pool: &SqlitePool) -> String {
     .unwrap_or_default();
 
     let mut posts_html = String::new();
-    for (author, content, avatar) in posts {
+    for (author, content, tag, avatar) in posts {
         let avatar_src = format!("../res/avatars/pic{}.png", avatar);
 
         posts_html.push_str(&format!(
@@ -85,11 +96,13 @@ pub async fn render_posts(pool: &SqlitePool) -> String {
                 <div class="post-user">
                     <img src="{}" alt="avatar" class="post-avatar">
                     <span>@{}</span>
+                    <span class="post-tag">{}</span>
                 </div>
                 <p class="post-content">{}</p>
             </section>"#,
             avatar_src,
             escape_html(&author),
+            escape_html(&tag),
             escape_html(&content)
         ));
     }
@@ -97,9 +110,9 @@ pub async fn render_posts(pool: &SqlitePool) -> String {
     posts_html
 }
 
-pub async fn render_user_posts(pool: &SqlitePool,username: &str,) -> String {
-    let posts: Vec<(String, String, i64)> = sqlx::query_as(
-        "SELECT posts.username, posts.content, COALESCE(users.avatar, 1)
+pub async fn render_user_posts(pool: &SqlitePool, username: &str) -> String {
+    let posts: Vec<(String, String, String, i64)> = sqlx::query_as(
+        "SELECT posts.username, posts.content, COALESCE(posts.tag, 'tag1'), COALESCE(users.avatar, 1)
          FROM posts
          LEFT JOIN users ON posts.username = users.username
          WHERE posts.username = ?
@@ -111,7 +124,7 @@ pub async fn render_user_posts(pool: &SqlitePool,username: &str,) -> String {
     .unwrap_or_default();
 
     let mut posts_html = String::new();
-    for (author, content, avatar) in posts {
+    for (author, content, tag, avatar) in posts {
         let avatar_src = format!("../res/avatars/pic{}.png", avatar);
 
         posts_html.push_str(&format!(
@@ -119,18 +132,19 @@ pub async fn render_user_posts(pool: &SqlitePool,username: &str,) -> String {
                 <div class="post-user">
                     <img src="{}" alt="avatar" class="post-avatar">
                     <span>@{}</span>
+                    <span class="post-tag">{}</span>
                 </div>
                 <p class="post-content">{}</p>
             </section>"#,
             avatar_src,
             escape_html(&author),
+            escape_html(&tag),
             escape_html(&content)
         ));
     }
 
     if posts_html.is_empty() {
-        posts_html = "<p>You haven't posted anything yet RETARD IEVA YOU FOID FUCKING FISH :p</p>"
-            .to_string();
+        posts_html = "<p>You haven't posted anything yet stupid moid go contribute to the statistic</p>".to_string();
     }
     
     posts_html

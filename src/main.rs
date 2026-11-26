@@ -51,7 +51,7 @@ async fn main() {
     )
     .fetch_one(&pool)
     .await
-    .expect("Failed to check avatar column");
+    .expect("Failed to check avatar column :c");
 
     //jeigu neegzistuoja, pridedam
 
@@ -63,7 +63,26 @@ async fn main() {
         )
         .execute(&pool)
         .await
-        .expect("Failed to add avatar column");
+        .expect("Failed to add avatar column :c");
+    }
+
+    //tas pats sudas kaip su komentarais myliu kopijuot koda
+    let tag_column_exists: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM pragma_table_info('posts')
+         WHERE name = 'tag'"
+    )
+    .fetch_one(&pool)
+    .await
+    .expect("Failed to check tag column :c");
+
+    if tag_column_exists == 0 {
+        sqlx::query(
+            "ALTER TABLE posts
+             ADD COLUMN tag TEXT NOT NULL DEFAULT 'tag1'"
+        )
+        .execute(&pool)
+        .await
+        .expect("Failed to add tag column :c");
     }
 
     //posts table
@@ -99,7 +118,6 @@ let app = Router::new()
     .nest_service("/res", ServeDir::new("res"))
     .with_state(pool);
 
-    // as zinau kaip sita veikia yes ahahaha
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
         .unwrap();

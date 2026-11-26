@@ -58,16 +58,25 @@
 		</section>
 	</aside>
 
-    <main class="posts-card">
+	<main class="posts-card">
         <h1>Write some bullshit here</h1>
         <form action="/post" method="POST" class="post-form">
-		<textarea class="textbox" name="content" placeholder="Write something..." maxlength="1000" required></textarea>
+		<textarea class="textbox" name="content" placeholder="Whaooooow..." maxlength="1000" required></textarea>
 		<div class="post-bottom">
 			<div id="word-count">
 				<span id="current">0</span> /
 				<span id="maximum">1000</span>
 			</div>
-		<button type="submit" class="btn">Post</button>
+			<select name="tag" class="tag-select">
+				<option value="Web">Web</option>
+				<option value="Crypto">Crypto</option>
+				<option value="Rev">Rev</option>
+				<option value="Pwn">Pwn</option>
+				<option value="Forensics">Forensics</option>
+				<option value="OSINT">OSINT</option>
+				<option value="Misc">Misc</option>
+			</select>
+			<button type="submit" class="btn">Post</button>
 		</div>
 	</form>
 
