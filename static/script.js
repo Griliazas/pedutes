@@ -65,6 +65,7 @@ if (formLog) {
     });
 }
 //Cia tsg notifikacija
+//amelija ar cia tu??
 function showNotification(message, type) {
     const notification = document.getElementById("notification");
 
@@ -127,3 +128,30 @@ avatarOptions.forEach(option => {
         }
     });
 });
+
+//filtravimui
+
+const filterButtons = document.querySelectorAll(".filter-btn");
+const postBoxes = document.querySelectorAll(".posts-feed .post-box");
+
+if (filterButtons.length > 0) {
+    filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            filterButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+
+            const selectedTag = button.dataset.filter;
+
+            postBoxes.forEach(post => {
+                const postTagEl = post.querySelector(".post-tag");
+                const postTag = postTagEl ? postTagEl.textContent.trim() : "";
+
+                if (selectedTag === "all" || postTag === selectedTag) {
+                    post.style.display = "";
+                } else {
+                    post.style.display = "none";
+                }
+            });
+        });
+    });
+}

@@ -58,9 +58,10 @@
 		</section>
 	</aside>
 
-	<main class="posts-card">
-        <h1>Write some bullshit here</h1>
-        <form action="/post" method="POST" class="post-form">
+<main class="posts-card">
+	<div class="posts-top">
+	<div>
+		<form action="/post" method="POST" class="post-form">
 		<textarea class="textbox" name="content" placeholder="Whaooooow..." maxlength="1000" required></textarea>
 		<div class="post-bottom">
 			<div id="word-count">
@@ -68,6 +69,7 @@
 				<span id="maximum">1000</span>
 			</div>
 			<select name="tag" class="tag-select">
+				<option value="General">General</option>
 				<option value="Web">Web</option>
 				<option value="Crypto">Crypto</option>
 				<option value="Rev">Rev</option>
@@ -78,7 +80,23 @@
 			</select>
 			<button type="submit" class="btn">Post</button>
 		</div>
-	</form>
+		</form>
+	</div>
+
+	<div class="filter-box">
+		<div class="filter-buttons" id="tag-filter">
+			<button type="button" class="filter-btn active" data-filter="all">All</button>
+			<button type="button" class="filter-btn" data-filter="General">General</button>
+			<button type="button" class="filter-btn" data-filter="Web">Web</button>
+			<button type="button" class="filter-btn" data-filter="Crypto">Crypto</button>
+			<button type="button" class="filter-btn" data-filter="Rev">Rev</button>
+			<button type="button" class="filter-btn" data-filter="Pwn">Pwn</button>
+			<button type="button" class="filter-btn" data-filter="Forensics">Forensics</button>
+			<button type="button" class="filter-btn" data-filter="OSINT">OSINT</button>
+			<button type="button" class="filter-btn" data-filter="Misc">Misc</button>
+		</div>
+	</div>
+	</div>
 
 	<div class="posts-feed">
 		{{POSTS_SECTION}}

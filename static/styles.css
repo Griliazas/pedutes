@@ -22,8 +22,10 @@
   --pink: #e8b3f3;
   --orange: #ecd0b5;
   --purple: #c6a5f1;
+  --turq: #9adac4;
 }
 
+.post-tag.General { background-color: var(--turq); }
 .post-tag.Web { background-color: var(--purple); }
 .post-tag.Crypto { background-color: var(--green); }
 .post-tag.Forensics { background-color: var(--blue); }
@@ -443,6 +445,10 @@ body.login-page {
     border-radius: 4px;
 }
 
+.posts-card .btn:hover {
+    border-color: var(--text-primary);
+}
+
 .posts-card .textbox {
     background-color: var(--bg-main);
     color: var(--text-primary);
@@ -521,6 +527,49 @@ body.login-page {
     border-radius: 4px;
     background-color: var(--text-primary);
     color: var(--border-primary);
+}
+
+.posts-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    max-width: 320px;
+}
+
+.filter-btn {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-secondary);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    border-color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background-color: var(--text-primary);
+    color: var(--bg-darkest);
+    border-color: var(--text-primary);
 }
 
 .tag-select {

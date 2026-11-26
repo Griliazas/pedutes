@@ -51,7 +51,7 @@ pub async fn create_post(
     }
 
     let tag = match form.tag.as_str() {
-        "Web" | "Crypto" | "Rev" | "Pwn" | "Forensics" | "OSINT" | "Misc" => form.tag.as_str(),
+        "General" | "Web" | "Crypto" | "Rev" | "Pwn" | "Forensics" | "OSINT" | "Misc" => form.tag.as_str(),
         _ => {
             return (
                 StatusCode::BAD_REQUEST,
