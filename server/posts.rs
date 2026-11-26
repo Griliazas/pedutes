@@ -51,7 +51,7 @@ pub async fn create_post(
     }
 
     let tag = match form.tag.as_str() {
-        "Web" | "Crypto" | "Rev" | "Pwn" | "Forensics" | "OSINT" | "MISC" => form.tag.as_str(),
+        "Web" | "Crypto" | "Rev" | "Pwn" | "Forensics" | "OSINT" | "Misc" => form.tag.as_str(),
         _ => {
             return (
                 StatusCode::BAD_REQUEST,
@@ -90,19 +90,21 @@ pub async fn render_posts(pool: &SqlitePool) -> String {
     let mut posts_html = String::new();
     for (author, content, tag, avatar) in posts {
         let avatar_src = format!("../res/avatars/pic{}.png", avatar);
+        let safe_tag = escape_html(&tag);
 
         posts_html.push_str(&format!(
             r#"<section class="post-box">
                 <div class="post-user">
                     <img src="{}" alt="avatar" class="post-avatar">
                     <span>@{}</span>
-                    <span class="post-tag">{}</span>
+                    <span class="post-tag {}">{}</span>
                 </div>
                 <p class="post-content">{}</p>
             </section>"#,
             avatar_src,
             escape_html(&author),
-            escape_html(&tag),
+            safe_tag,
+            safe_tag,
             escape_html(&content)
         ));
     }
@@ -126,19 +128,21 @@ pub async fn render_user_posts(pool: &SqlitePool, username: &str) -> String {
     let mut posts_html = String::new();
     for (author, content, tag, avatar) in posts {
         let avatar_src = format!("../res/avatars/pic{}.png", avatar);
+        let safe_tag = escape_html(&tag);
 
         posts_html.push_str(&format!(
             r#"<section class="post-box">
                 <div class="post-user">
                     <img src="{}" alt="avatar" class="post-avatar">
                     <span>@{}</span>
-                    <span class="post-tag">{}</span>
+                    <span class="post-tag {}">{}</span>
                 </div>
                 <p class="post-content">{}</p>
             </section>"#,
             avatar_src,
             escape_html(&author),
-            escape_html(&tag),
+            safe_tag,
+            safe_tag,
             escape_html(&content)
         ));
     }
