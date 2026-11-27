@@ -219,6 +219,7 @@ header i{
     margin-bottom: 10px;
 }
 
+
 .popular-posts {
     flex: 2;
 }
@@ -277,6 +278,7 @@ footer{
     width: 100%;
     flex: 1;
     display: flex;
+    margin-bottom: 50px;
 }
 
 footer i {
@@ -699,11 +701,11 @@ body.login-page {
 }  
 
 .upvote:hover, .upvote.active {
-    color: var(--green);
+    color: var(--text-primary);
 }
 
 .downvote:hover, .downvote.active {
-    color: var(--red);
+    color: var(--purple);
 }
 
 .vote-score {
@@ -714,11 +716,11 @@ body.login-page {
 }
 
 .vote-score.positive {
-    color: var(--green);
+    color: var(--text-primary);
 }
 
 .vote-score.negative {
-    color: var(--red);
+    color: var(--purple);
 }
 
 #avatar-status {
