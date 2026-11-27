@@ -74,7 +74,8 @@ pub async fn recs_page(
     jar: CookieJar,
     State(pool): State<SqlitePool>,
 ) -> Html<String> {
-    let posts_html = crate::posts::render_posts(&pool).await;
+    let username = jar.get("username").map(|cookie| cookie.value());
+    let posts_html = crate::posts::render_posts(&pool, username).await;
     let mut page = render_page("static/recs.html", &jar, &pool).await.0;
     page = page.replace("{{POSTS_SECTION}}", &posts_html);
     Html(page)

@@ -24,7 +24,8 @@ async fn main() {
 
     let options = SqliteConnectOptions::new()
         .filename("forum.db")
-        .create_if_missing(true);
+        .create_if_missing(true)
+        .foreign_keys(true);
 
     let pool = SqlitePool::connect_with(options)
         .await
@@ -66,6 +67,19 @@ async fn main() {
         .expect("Failed to add avatar column :c");
     }
 
+        //posts table
+
+    sqlx::query(
+        "CREATE TABLE IF NOT EXISTS posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            content TEXT NOT NULL
+        )"
+    )
+    .execute(&pool)
+    .await
+    .expect("Failed to create posts table :3");
+
     //tas pats sudas kaip su komentarais myliu kopijuot koda
     let tag_column_exists: i64 = sqlx::query_scalar(
         "SELECT COUNT(*) FROM pragma_table_info('posts')
@@ -85,18 +99,21 @@ async fn main() {
         .expect("Failed to add tag column :c");
     }
 
-    //posts table
-
     sqlx::query(
-        "CREATE TABLE IF NOT EXISTS posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+        "CREATE TABLE IF NOT EXISTS votes (
+            post_id INTEGER NOT NULL,
             username TEXT NOT NULL,
-            content TEXT NOT NULL
+            vote INTEGER NOT NULL CHECK (vote IN (-1, 1)),
+            PRIMARY KEY (post_id, username),
+            FOREIGN KEY (post_id) REFERENCES posts(id)
+                ON DELETE CASCADE,
+            FOREIGN KEY(username) REFERENCES users(username)
+                ON DELETE CASCADE
         )"
     )
     .execute(&pool)
     .await
-    .expect("Failed to create posts table :3");
+    .expect("Votes table ispiso tavo mama :(");
 
     println!("Database connected :3");
 
@@ -105,6 +122,7 @@ async fn main() {
 let app = Router::new()
     .route("/", get(pages::index_handler))
     .route("/post", post(posts::create_post))
+    .route("/vote", post(posts::vote_post))
     .route("/about", get(pages::about_page))
     .route("/changelog", get(pages::changelog_page))
     .route("/recs", get(pages::recs_page))

@@ -12,6 +12,13 @@ pub struct PostForm {
     pub content: String,
     pub tag: String,
 }
+
+#[derive(Deserialize)]
+pub struct VoteForm {
+    pub post_id: i64,
+    pub vote: i64,
+}
+
 //as parasysiu komentartus kita komita
 fn escape_html(input: &str) -> String {
     input
@@ -76,21 +83,112 @@ pub async fn create_post(
     }
 }
 
-pub async fn render_posts(pool: &SqlitePool) -> String {
-    let posts: Vec<(String, String, String, i64)> = sqlx::query_as(
-        "SELECT posts.username, posts.content, COALESCE(posts.tag, 'Misc'), COALESCE(users.avatar, 1) 
-         FROM posts 
-         LEFT JOIN users ON posts.username = users.username 
-         ORDER BY posts.id DESC"
+pub async fn vote_post(
+    jar: CookieJar,
+    State(pool): State<SqlitePool>,
+    Form(form): Form<VoteForm>,
+) -> axum::response::Response {
+
+    let username = match jar.get("username") {
+        Some(cookie) => cookie.value().to_string(),
+        None => {
+            return Redirect::to("/login").into_response();
+        }
+    };
+
+    if form.vote != 1 && form.vote != -1 {
+        return (
+            StatusCode::BAD_REQUEST,
+            "Invalidas.",
+        ).into_response();
+    }
+
+    let mut tx = match pool.begin().await {
+        Ok(tx) => tx,
+        Err(_) => {
+            return StatusCode::INTERNAL_SERVER_ERROR
+                .into_response();
+        }
+    };
+
+    let deleted = sqlx::query(
+        "DELETE FROM votes
+        WHERE post_id = ?
+        AND username = ?
+        AND vote = ?"
     )
+    .bind(form.post_id)
+    .bind(&username)
+    .bind(form.vote)
+    .execute(&mut *tx)
+    .await;
+
+    match deleted {
+        Ok(result) => {
+            if result.rows_affected() == 0 {
+                let result = sqlx::query(
+                    "INSERT INTO votes (post_id, username, vote)
+                    VALUES (?, ?, ?)
+                    ON CONFLICT(post_id, username)
+                    DO UPDATE SET vote = excluded.vote"
+                )
+                .bind(form.post_id)
+                .bind(&username)
+                .bind(form.vote)
+                .execute(&mut *tx)
+                .await;
+
+                if result.is_err() {
+                    return (
+                        StatusCode::BAD_REQUEST,
+                        "Failed to vote :)",
+                    ).into_response();
+                }
+            }
+        }
+        Err(_) => {
+            return StatusCode::INTERNAL_SERVER_ERROR
+                .into_response();
+        }
+    }
+
+    if tx.commit().await.is_err() {
+        return StatusCode::INTERNAL_SERVER_ERROR
+            .into_response();
+    }
+    Redirect::to("/recs").into_response()
+}
+
+pub async fn render_posts(pool: &SqlitePool, username: Option<&str>) -> String {
+    let posts: Vec<(String, String, String, i64, i64, i64, i64)> = sqlx::query_as(
+        "SELECT posts.username, posts.content, COALESCE(posts.tag, 'Misc'), COALESCE(users.avatar, 1),
+        posts.id,
+        COALESCE((SELECT SUM(vote) FROM votes
+            WHERE votes.post_id = posts.id), 0),
+        COALESCE((SELECT vote FROM votes
+            WHERE votes.post_id = posts.id
+            AND votes.username = ?), 0)
+        FROM posts 
+        LEFT JOIN users ON posts.username = users.username 
+        ORDER BY posts.id DESC"
+    )
+    .bind(username)
     .fetch_all(pool)
     .await
     .unwrap_or_default();
 
     let mut posts_html = String::new();
-    for (author, content, tag, avatar) in posts {
+    for (author, content, tag, avatar, id, score, user_vote) in posts {
         let avatar_src = format!("../res/avatars/pic{}.png", avatar);
         let safe_tag = escape_html(&tag);
+        let upvote_class = if user_vote == 1 { "active" } else { "" };
+        let downvote_class = if user_vote == -1 { "active" } else { "" };
+        
+        let score_class = match user_vote {
+            1 => "positive",
+            -1 => "negative",
+            _ => "",
+        };
 
         posts_html.push_str(&format!(
             r#"<section class="post-box">
@@ -100,6 +198,23 @@ pub async fn render_posts(pool: &SqlitePool) -> String {
                     <span class="post-tag {}">{}</span>
                 </div>
                 <p class="post-content">{}</p>
+
+                <form action="/vote" method="POST" class="post-votes">
+                    <input type="hidden" name="post_id" value="{id}">
+                    <button type="submit" name="vote" value="1"
+                        class="vote-btn upvote {upvote_class}"
+                        aria-label="Upvote">
+                        <i class="bxf bx-arrow-big-up"></i>
+                    </button>
+                    
+                    <span class="vote-score {score_class}">{score}</span>
+
+                    <button type="submit" name="vote" value="-1"
+                        class="vote-btn downvote {downvote_class}"
+                        aria-label="Downvote">
+                        <i class="bxf bx-arrow-big-down"></i>
+                    </button>
+                    </form>
             </section>"#,
             avatar_src,
             escape_html(&author),

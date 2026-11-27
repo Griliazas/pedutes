@@ -665,6 +665,62 @@ body.login-page {
     border-color: var(--text-accent);
 }
 
+.post-votes {
+    display:flex;
+    align-items: center;
+    width: fit-content;
+    gap: 4px;
+    margin-top: 12px;
+    padding: 2px 6px;
+    border: 1px solid var(--border-secondary);
+    border-radius: 4px;
+}
+
+.vote-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 20px;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.vote-btn i {
+    margin: 0;
+    transform: none;
+}
+
+.vote-btn:hover {
+    background-color: var(--bg-elevated)
+}  
+
+.upvote:hover, .upvote.active {
+    color: var(--green);
+}
+
+.downvote:hover, .downvote.active {
+    color: var(--red);
+}
+
+.vote-score {
+    min-width: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.vote-score.positive {
+    color: var(--green);
+}
+
+.vote-score.negative {
+    color: var(--red);
+}
+
 #avatar-status {
     flex-basis: 100%;
     color: var(--red-notif);
